@@ -23,12 +23,16 @@ public class FacturacionTests
     {
         var art = new Articulo { Codigo = "A1", Descripcion = "Articulo", PrecioUnitario = precio, StockActual = stock, AlicuotaIva = 21m };
         db.Articulos.Add(art);
+
+        var cliente = new Cliente { RazonSocial = "Cliente Test", Cuit = "20-00000000-0", CondicionIva = CondicionIva.ResponsableInscripto };
+        db.Clientes.Add(cliente);
         await db.SaveChangesAsync();
 
         var pres = new Presupuesto
         {
             Numero = 1,
             Fecha = DateTime.UtcNow,
+            ClienteId = cliente.Id,
             ValidezDias = 30,
             Estado = EstadoPresupuesto.Aprobado,
             Items = new List<PresupuestoItem>
