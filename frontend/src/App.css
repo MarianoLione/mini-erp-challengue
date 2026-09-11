@@ -1,0 +1,19 @@
+.app {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  text-align: left;
+}
+
+.app h1 {
+  font-size: 1.75rem;
+  margin: 0 0 0.75rem;
+}
+
+.app p {
+  margin: 0 0 0.75rem;
+}
+
+.api code {
+  font-size: 0.95em;
+}
