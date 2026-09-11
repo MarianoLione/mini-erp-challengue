@@ -1,19 +1,63 @@
 .app {
-  max-width: 40rem;
+  max-width: 72rem;
   margin: 0 auto;
   padding: 2rem 1.5rem;
-  text-align: left;
 }
 
 .app h1 {
   font-size: 1.75rem;
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.25rem;
 }
 
-.app p {
-  margin: 0 0 0.75rem;
+.app h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 1.25rem;
 }
 
-.api code {
-  font-size: 0.95em;
+.status {
+  margin: 0;
+}
+
+.status-error {
+  color: #c62828;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.grid th,
+.grid td {
+  border-bottom: 1px solid #3a3a3a;
+  padding: 0.55rem 0.7rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.grid th {
+  font-weight: 600;
+}
+
+.grid td.num,
+.grid th.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-color-scheme: light) {
+  .status-error {
+    color: #b71c1c;
+  }
+
+  .grid th,
+  .grid td {
+    border-bottom-color: #e0e0e0;
+  }
 }
