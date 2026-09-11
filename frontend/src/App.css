@@ -12,7 +12,61 @@
 .app h2 {
   font-size: 1.1rem;
   font-weight: 600;
+  margin: 0;
+}
+
+.app h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   margin: 0 0 1.25rem;
+}
+
+.panel {
+  margin: 1.5rem 0 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: minmax(16rem, 2fr) minmax(8rem, 1fr);
+  gap: 1rem;
+  max-width: 40rem;
+}
+
+.form-grid label,
+.search-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.search-row {
+  flex-direction: row;
+  align-items: center;
+  max-width: 32rem;
+  margin-bottom: 0.75rem;
+}
+
+.search-row input,
+.form-grid input,
+.form-grid select {
+  font: inherit;
+  padding: 0.4rem 0.55rem;
+}
+
+.input-num {
+  width: 5.5rem;
+  font: inherit;
+  padding: 0.25rem 0.4rem;
+  text-align: right;
 }
 
 .status {
