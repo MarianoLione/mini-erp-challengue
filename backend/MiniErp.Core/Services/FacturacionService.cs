@@ -28,11 +28,22 @@ public class FacturacionService
         if (DateTime.UtcNow > vencimiento)
             throw new InvalidOperationException("El presupuesto esta vencido y no se puede facturar.");
 
-        foreach (var item in presupuesto.Items)
+        var requeridoPorArticulo = presupuesto.Items
+            .GroupBy(i => i.ArticuloId)
+            .ToDictionary(g => g.Key, g => g.Sum(i => i.Cantidad));
+
+        var articulos = await _db.Articulos
+            .Where(a => requeridoPorArticulo.Keys.Contains(a.Id))
+            .ToDictionaryAsync(a => a.Id);
+
+        foreach (var (articuloId, cantidadRequerida) in requeridoPorArticulo)
         {
-            var articulo = await _db.Articulos.FirstAsync(a => a.Id == item.ArticuloId);
-            articulo.StockActual -= item.Cantidad;
+            if (!articulos.TryGetValue(articuloId, out var articulo) || articulo.StockActual < cantidadRequerida)
+                throw new InvalidOperationException("No hay stock suficiente para facturar el presupuesto.");
         }
+
+        foreach (var (articuloId, cantidadRequerida) in requeridoPorArticulo)
+            articulos[articuloId].StockActual -= cantidadRequerida;
 
         var totales = _presupuestos.CalcularTotales(presupuesto);
 
