@@ -75,6 +75,7 @@
 
 .status-error {
   color: #c62828;
+  margin-bottom: 0.75rem;
 }
 
 .status-ok {

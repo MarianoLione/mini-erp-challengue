@@ -29,12 +29,13 @@ export async function getJson<T>(path: string): Promise<T> {
   return leerJson<T>(await fetch(`${API_BASE_URL}${path}`));
 }
 
-export async function postJson<T>(path: string, body: unknown): Promise<T> {
+export async function postJson<T>(path: string, body?: unknown): Promise<T> {
+  const conBody = body !== undefined;
   return leerJson<T>(
     await fetch(`${API_BASE_URL}${path}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      headers: conBody ? { "Content-Type": "application/json" } : undefined,
+      body: conBody ? JSON.stringify(body) : undefined,
     }),
   );
 }
