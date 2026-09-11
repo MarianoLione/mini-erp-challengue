@@ -105,6 +105,29 @@
   font-variant-numeric: tabular-nums;
 }
 
+.totales {
+  display: grid;
+  gap: 0.35rem;
+  max-width: 20rem;
+  margin: 1.25rem 0 0 auto;
+}
+
+.totales div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.totales dt {
+  margin: 0;
+  font-weight: 600;
+}
+
+.totales dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
 @media (prefers-color-scheme: light) {
   .status-error {
     color: #b71c1c;

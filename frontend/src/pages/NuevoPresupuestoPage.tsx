@@ -5,6 +5,8 @@ import { getClientes } from "../api/clientes";
 import type { Articulo } from "../types/articulo";
 import type { Cliente } from "../types/cliente";
 import type { PresupuestoLinea } from "../types/presupuestoLinea";
+import { formatMoneda } from "../utils/format";
+import { calcularTotales } from "../utils/totales";
 
 type Props = {
   onVolver: () => void;
@@ -39,6 +41,8 @@ export function NuevoPresupuestoPage({ onVolver }: Props) {
     () => new Set(lineas.map((l) => l.articuloId)),
     [lineas],
   );
+
+  const totales = useMemo(() => calcularTotales(lineas), [lineas]);
 
   function agregarArticulo(articulo: Articulo) {
     setLineas((prev) => {
@@ -132,6 +136,21 @@ export function NuevoPresupuestoPage({ onVolver }: Props) {
           onDescuento={cambiarDescuento}
           onEliminar={eliminarLinea}
         />
+
+        <dl className="totales">
+          <div>
+            <dt>Subtotal</dt>
+            <dd>{formatMoneda(totales.subtotal)}</dd>
+          </div>
+          <div>
+            <dt>IVA</dt>
+            <dd>{formatMoneda(totales.iva)}</dd>
+          </div>
+          <div>
+            <dt>Total</dt>
+            <dd>{formatMoneda(totales.total)}</dd>
+          </div>
+        </dl>
       </section>
     </section>
   );
