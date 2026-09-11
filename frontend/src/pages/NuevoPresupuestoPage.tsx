@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArticuloSearch } from "../components/ArticuloSearch";
 import { PresupuestoItems } from "../components/PresupuestoItems";
 import { getClientes } from "../api/clientes";
+import { crearPresupuesto } from "../api/presupuestos";
 import type { Articulo } from "../types/articulo";
 import type { Cliente } from "../types/cliente";
 import type { PresupuestoLinea } from "../types/presupuestoLinea";
@@ -10,14 +11,17 @@ import { calcularTotales } from "../utils/totales";
 
 type Props = {
   onVolver: () => void;
+  onCreado: () => void;
 };
 
-export function NuevoPresupuestoPage({ onVolver }: Props) {
+export function NuevoPresupuestoPage({ onVolver, onCreado }: Props) {
   const [clientes, setClientes] = useState<Cliente[] | null>(null);
   const [errorClientes, setErrorClientes] = useState<string | null>(null);
   const [clienteId, setClienteId] = useState<number | "">("");
   const [validezDias, setValidezDias] = useState(15);
   const [lineas, setLineas] = useState<PresupuestoLinea[]>([]);
+  const [guardando, setGuardando] = useState(false);
+  const [errorGuardar, setErrorGuardar] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelado = false;
@@ -80,6 +84,49 @@ export function NuevoPresupuestoPage({ onVolver }: Props) {
 
   function eliminarLinea(articuloId: number) {
     setLineas((prev) => prev.filter((l) => l.articuloId !== articuloId));
+  }
+
+  function mensajeValidacion(): string | null {
+    if (clienteId === "") return "Seleccioná un cliente.";
+    if (validezDias <= 0) return "La validez debe ser mayor que 0.";
+    if (lineas.length === 0) return "Agregá al menos un artículo.";
+    if (lineas.some((l) => l.cantidad <= 0)) return "La cantidad debe ser mayor que 0.";
+    if (lineas.some((l) => l.descuentoPct < 0 || l.descuentoPct > 100)) {
+      return "El descuento debe estar entre 0 y 100.";
+    }
+    return null;
+  }
+
+  const invalido = mensajeValidacion() !== null;
+
+  async function guardar() {
+    const validacion = mensajeValidacion();
+    if (validacion || guardando) {
+      setErrorGuardar(validacion);
+      return;
+    }
+
+    if (clienteId === "") return;
+
+    setGuardando(true);
+    setErrorGuardar(null);
+
+    try {
+      await crearPresupuesto({
+        clienteId,
+        validezDias,
+        items: lineas.map((l) => ({
+          articuloId: l.articuloId,
+          cantidad: l.cantidad,
+          descuentoPct: l.descuentoPct,
+        })),
+      });
+      onCreado();
+    } catch (err: unknown) {
+      setErrorGuardar(err instanceof Error ? err.message : "No se pudo crear el presupuesto.");
+    } finally {
+      setGuardando(false);
+    }
   }
 
   return (
@@ -151,6 +198,14 @@ export function NuevoPresupuestoPage({ onVolver }: Props) {
             <dd>{formatMoneda(totales.total)}</dd>
           </div>
         </dl>
+
+        <div className="acciones">
+          <button type="button" onClick={() => void guardar()} disabled={guardando || invalido}>
+            {guardando ? "Guardando…" : "Crear presupuesto"}
+          </button>
+          {guardando && <span className="status">Guardando presupuesto…</span>}
+          {errorGuardar && <p className="status status-error">{errorGuardar}</p>}
+        </div>
       </section>
     </section>
   );

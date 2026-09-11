@@ -18,10 +18,23 @@ async function mensajeError(response: Response): Promise<string> {
   return `Error ${response.status}`;
 }
 
-export async function getJson<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`);
+async function leerJson<T>(response: Response): Promise<T> {
   if (!response.ok) {
     throw new Error(await mensajeError(response));
   }
   return (await response.json()) as T;
+}
+
+export async function getJson<T>(path: string): Promise<T> {
+  return leerJson<T>(await fetch(`${API_BASE_URL}${path}`));
+}
+
+export async function postJson<T>(path: string, body: unknown): Promise<T> {
+  return leerJson<T>(
+    await fetch(`${API_BASE_URL}${path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }),
+  );
 }
