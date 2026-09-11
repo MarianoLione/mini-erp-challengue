@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MiniErp.Core.Data;
+using MiniErp.Core.Models;
 
 namespace MiniErp.Core.Services;
 
@@ -11,9 +12,16 @@ public class NumeracionService
 
     public async Task<int> ProximoNumeroPresupuestoAsync()
     {
-        // El proximo numero se calcula a partir de la cantidad de presupuestos existentes.
-        var cantidad = await _db.Presupuestos.CountAsync();
-        return cantidad + 1;
+        var numerador = await _db.Numeradores.FirstOrDefaultAsync(n => n.Clave == "Presupuesto");
+        if (numerador is null)
+        {
+            var maxExistente = await _db.Presupuestos.MaxAsync(p => (int?)p.Numero) ?? 0;
+            numerador = new Numerador { Clave = "Presupuesto", UltimoNumero = maxExistente };
+            _db.Numeradores.Add(numerador);
+        }
+
+        numerador.UltimoNumero++;
+        return numerador.UltimoNumero;
     }
 
     public async Task<int> ProximoNumeroFacturaAsync()

@@ -12,6 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<Presupuesto> Presupuestos => Set<Presupuesto>();
     public DbSet<PresupuestoItem> PresupuestoItems => Set<PresupuestoItem>();
     public DbSet<Factura> Facturas => Set<Factura>();
+    public DbSet<Numerador> Numeradores => Set<Numerador>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
